@@ -381,10 +381,11 @@
         
         // Generate all 127 image names from 0001 to 0127
         for (let i = 29; i <= 127; i++) {
-            let number = i.toString().padStart(4, '0');
-            imageFiles.push(`IMG-20260613-WA${number}.jpg`);
+    if ((i >= 29 && i <= 49) || (i >= 58 && i <= 127)) {
+        let number = i.toString().padStart(4, '0');
+        imageFiles.push(`IMG-20260613-WA${number}.jpg`);
+    }
         }
-        
         const mediaItems = [];
         
         // Add all images
