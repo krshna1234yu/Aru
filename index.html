@@ -11,16 +11,11 @@
             box-sizing: border-box;
         }
 
-        html {
-            font-size: 16px;
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
             min-height: 100vh;
             padding: 20px;
-            transition: all 0.5s ease;
         }
 
         /* Royal Welcome Banner */
@@ -88,6 +83,11 @@
             font-size: 2rem;
         }
 
+        .header p {
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
         /* Theme Selector */
         .theme-selector {
             background: rgba(0,0,0,0.6);
@@ -116,7 +116,7 @@
             min-width: 200px;
         }
 
-        /* Upload Area - VISIBLE BY DEFAULT */
+        /* Upload Area */
         .upload-area {
             background: rgba(255,255,255,0.95);
             border-radius: 20px;
@@ -191,13 +191,6 @@
 
         .control-btn:hover {
             transform: scale(1.05);
-        }
-
-        .finalize-btn {
-            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-            color: #2d1b0e;
-            padding: 15px 40px;
-            font-size: 18px;
         }
 
         /* Gallery Grid */
@@ -348,41 +341,13 @@
             color: white;
         }
 
-        /* Finalize Message - HIDDEN BY DEFAULT */
-        .finalize-message {
-            display: none;
-            text-align: center;
-            background: rgba(255,215,0,0.2);
-            padding: 12px;
-            border-radius: 50px;
-            margin-bottom: 20px;
-            color: #ffd700;
-            font-weight: bold;
-        }
-
-        /* LOCKED STATE - When finalized, hide these elements */
-        body.locked .upload-area {
-            display: none !important;
-        }
-
-        body.locked .finalize-btn {
-            display: none !important;
-        }
-
-        body.locked .delete-btn {
-            display: none !important;
-        }
-
-        body.locked .finalize-message {
-            display: block !important;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .gallery { grid-template-columns: 1fr; }
             .media-container img, .media-container video { height: 220px; }
             .royal-welcome h1 { font-size: 1.3rem; }
             .upload-btn { padding: 10px 20px; font-size: 14px; }
+            .theme-selector label { display: block; margin-bottom: 10px; }
         }
 
         @keyframes fadeInUp {
@@ -391,7 +356,7 @@
         }
     </style>
 </head>
-<body id="appBody">
+<body>
     <!-- Royal Welcome Banner -->
     <div class="royal-welcome">
         <div class="crown-icon">👑</div>
@@ -404,14 +369,8 @@
     </div>
 
     <div class="header">
-        <h1 id="themeTitle">🌸 Royal Gallery 🌸</h1>
-        <p id="themeSubtitle">Select a theme - Your precious memories!</p>
-    </div>
-
-    <!-- Finalize Message - Shows only after locking -->
-    <div class="finalize-message" id="finalizeMessage">
-        👑 QUEEN'S ORDER: GALLERY IS LOCKED 👑<br>
-        Upload & Delete disabled. You can view, download & change themes.
+        <h1>🌸 Royal Gallery 🌸</h1>
+        <p>Upload your precious memories - They will stay forever!</p>
     </div>
 
     <!-- Theme Selector -->
@@ -469,8 +428,8 @@
         </select>
     </div>
 
-    <!-- UPLOAD AREA - Visible at start, hidden after finalize -->
-    <div class="upload-area" id="uploadArea">
+    <!-- Upload Area -->
+    <div class="upload-area">
         <div class="upload-buttons">
             <input type="file" id="photoInput" multiple accept="image/*">
             <button class="upload-btn photos" onclick="document.getElementById('photoInput').click()">
@@ -491,16 +450,6 @@
         <button class="control-btn" onclick="exportHTML()">📄 Export Gallery</button>
     </div>
 
-    <!-- Finalize Button -->
-    <div class="controls">
-        <button class="control-btn finalize-btn" id="finalizeBtn" onclick="finalizeGallery()">
-            👑 LOCK GALLERY (Disable Upload & Delete) 👑
-        </button>
-        <p style="color: white; font-size: 12px; margin-top: 10px;">
-            ⚠️ Once locked, Upload & Delete buttons will disappear permanently
-        </p>
-    </div>
-
     <div class="gallery" id="gallery"></div>
 
     <!-- Modal -->
@@ -512,71 +461,31 @@
     <script>
         let mediaItems = [];
         let currentTheme = 'flower';
-        let isFinalized = false;
 
-        // ========== LOAD SAVED DATA ON PAGE LOAD ==========
+        // Load saved data on page load
         function loadSavedData() {
-            // Load saved media items (photos & videos)
             const savedMedia = localStorage.getItem('aruGalleryMedia');
+            const savedTheme = localStorage.getItem('aruGalleryTheme');
+            
             if (savedMedia && savedMedia !== '[]') {
                 mediaItems = JSON.parse(savedMedia);
-                console.log('Loaded ' + mediaItems.length + ' items from storage');
+                console.log('Loaded ' + mediaItems.length + ' items');
             }
-            
-            // Load saved theme
-            const savedTheme = localStorage.getItem('aruGalleryTheme');
             if (savedTheme) {
                 currentTheme = savedTheme;
             }
             
-            // Load finalized state - THIS IS KEY FOR PERSISTENCE
-            const savedFinalized = localStorage.getItem('aruGalleryFinalized');
-            if (savedFinalized === 'true') {
-                isFinalized = true;
-                document.getElementById('appBody').classList.add('locked');
-                console.log('Gallery is in LOCKED state from previous session');
-            } else {
-                console.log('Gallery is in UNLOCKED state');
-            }
-            
-            // Apply theme and render
             applyTheme(currentTheme);
             updateCount();
         }
 
-        // ========== SAVE ALL DATA ==========
+        // Save all data
         function saveAllData() {
             localStorage.setItem('aruGalleryMedia', JSON.stringify(mediaItems));
             localStorage.setItem('aruGalleryTheme', currentTheme);
-            if (isFinalized) {
-                localStorage.setItem('aruGalleryFinalized', 'true');
-            } else {
-                localStorage.setItem('aruGalleryFinalized', 'false');
-            }
-            console.log('Data saved - Items: ' + mediaItems.length + ', Finalized: ' + isFinalized);
         }
 
-        // ========== APPLY FINALIZED STATE (Hides upload & delete) ==========
-        function applyFinalizedState() {
-            document.getElementById('appBody').classList.add('locked');
-            renderGallery(); // Re-render to remove delete buttons
-            saveAllData();
-        }
-
-        // ========== FINALIZE GALLERY ==========
-        window.finalizeGallery = function() {
-            if (mediaItems.length === 0) {
-                alert('👑 Queen says: Please upload photos/videos before locking! 👑');
-                return;
-            }
-            if (confirm('👑 QUEEN\'S COMMAND - LOCK GALLERY? 👑\n\nOnce locked:\n✓ Upload button will disappear FOREVER\n✓ Delete buttons will disappear FOREVER\n✓ Theme selection still works\n✓ Download & Export still work\n✓ Images will remain even after refresh\n\nThis action CANNOT be undone!\n\nAre you sure?')) {
-                isFinalized = true;
-                applyFinalizedState();
-                alert('👑 Gallery Locked Permanently! Upload & Delete buttons are now hidden.\n\nRefresh the page - they will stay hidden! 👑');
-            }
-        };
-
-        // ========== 30+ THEMES ==========
+        // 30+ Themes
         const themes = {
             flower: { name: "🌸 Flower", bg: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)", frameBg: "#fff5e6", border: "3px solid #ff69b4", corner1: "🌸", corner2: "🌺", corner3: "🌼", corner4: "🌻", textColor: "#c2185b", btnColor: "#ff69b4", borderRadius: "50px" },
             rose: { name: "🌹 Rose", bg: "linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%)", frameBg: "#fff0f0", border: "3px solid #dc143c", corner1: "🌹", corner2: "🥀", corner3: "🌹", corner4: "🥀", textColor: "#8b0000", btnColor: "#dc143c", borderRadius: "30px" },
@@ -618,10 +527,10 @@
             currentTheme = themeKey;
             const theme = themes[themeKey];
             document.body.style.background = theme.bg;
-            document.getElementById('themeTitle').innerHTML = theme.name + " 👑";
+            document.querySelector('.header h1').innerHTML = theme.name + " Royal Gallery 👑";
             const photoCount = mediaItems.filter(m => m.type === 'photo').length;
             const videoCount = mediaItems.filter(m => m.type === 'video').length;
-            document.getElementById('themeSubtitle').innerHTML = `✨ ${theme.name} Theme - ${photoCount} photos | ${videoCount} videos ✨`;
+            document.querySelector('.header p').innerHTML = `✨ ${theme.name} Theme - ${photoCount} photos | ${videoCount} videos ✨`;
             document.getElementById('themeDropdown').value = themeKey;
             renderGallery();
             saveAllData();
@@ -649,10 +558,10 @@
             const theme = themes[currentTheme];
             const gallery = document.getElementById('gallery');
             if (mediaItems.length === 0) {
-                gallery.innerHTML = `<div class="empty-state">👑 Welcome Queen Aru! Upload your precious memories to begin the royal gallery! 👑</div>`;
+                gallery.innerHTML = `<div class="empty-state">👑 Welcome Queen Aru! 👑<br>📸 Upload your precious memories above to begin the royal gallery! 📸</div>`;
                 return;
             }
-            const showDeleteBtn = !isFinalized;
+            
             gallery.innerHTML = mediaItems.map(item => `
                 <div class="theme-frame" style="background: ${theme.frameBg}; border: ${theme.border}; border-radius: ${theme.borderRadius};">
                     <div class="frame-corner corner-tl">${theme.corner1}</div>
@@ -672,7 +581,7 @@
                             <button class="download-btn" style="background: ${theme.btnColor};" onclick="downloadMedia('${item.src}', '${item.name}', '${item.type}')">
                                 ⬇️ Download
                             </button>
-                            ${showDeleteBtn ? `<button class="delete-btn" onclick="deleteMedia('${item.id}')">🗑️ Delete</button>` : ''}
+                            <button class="delete-btn" onclick="deleteMedia('${item.id}')">🗑️ Delete</button>
                         </div>
                     </div>
                 </div>
@@ -680,10 +589,6 @@
         }
 
         window.deleteMedia = function(id) {
-            if (isFinalized) {
-                alert('👑 Gallery is locked! Cannot delete. 👑');
-                return;
-            }
             if (confirm('Remove this item?')) {
                 mediaItems = mediaItems.filter(item => item.id != id);
                 renderGallery();
@@ -696,6 +601,8 @@
             const photoCount = mediaItems.filter(m => m.type === 'photo').length;
             const videoCount = mediaItems.filter(m => m.type === 'video').length;
             document.getElementById('mediaCount').innerHTML = `👑 📸 ${photoCount} photos | 🎥 ${videoCount} videos 👑`;
+            const theme = themes[currentTheme];
+            document.querySelector('.header p').innerHTML = `✨ ${theme.name} Theme - ${photoCount} photos | ${videoCount} videos ✨`;
         }
 
         window.exportHTML = function() {
@@ -703,7 +610,9 @@
                 alert('No media to export!');
                 return;
             }
-            const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Aru's Royal Gallery</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial;background:${themes[currentTheme].bg};padding:20px;}.royal-banner{text-align:center;background:linear-gradient(135deg,gold,pink);padding:20px;border-radius:50px;margin-bottom:20px;}.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:25px;}.frame{background:${themes[currentTheme].frameBg};border:${themes[currentTheme].border};border-radius:${themes[currentTheme].borderRadius};padding:15px;}.frame img,.frame video{width:100%;height:250px;object-fit:cover;border-radius:20px;}.download-btn{background:${themes[currentTheme].btnColor};color:white;border:none;padding:8px 20px;border-radius:30px;margin-top:10px;cursor:pointer;}</style></head><body><div class="royal-banner"><h1>👑 Welcome to Aru's Gallery World 👑</h1><p>👸 I am the Queen of this Gallery 👸</p><p>🎁 A small gift from Khushi Buaa 🎁</p></div><h2 style="text-align:center;color:white;">${themes[currentTheme].name} Gallery</h2><div class="gallery" id="gallery"></div><script>const mediaItems = ${JSON.stringify(mediaItems)};const gallery = document.getElementById('gallery');function download(src,name){const a=document.createElement('a');a.href=src;a.download=name;a.click();}mediaItems.forEach(item=>{const div=document.createElement('div');div.className='frame';if(item.type === 'video'){div.innerHTML=\`<video src="\${item.src}" controls></video><br><button class="download-btn" onclick="download('\${item.src}','\${item.name}')">⬇️ Download</button>\`;}else{div.innerHTML=\`<img src="\${item.src}" onclick="window.open(this.src)"><br><button class="download-btn" onclick="download('\${item.src}','\${item.name}')">⬇️ Download</button>\`;}gallery.appendChild(div);});<\/script></body></html>`;
+            
+            const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Aru's Royal Gallery</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial;background:${themes[currentTheme].bg};padding:20px;}.royal-banner{text-align:center;background:linear-gradient(135deg,gold,pink);padding:20px;border-radius:50px;margin-bottom:20px;}.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:25px;}.frame{background:${themes[currentTheme].frameBg};border:${themes[currentTheme].border};border-radius:${themes[currentTheme].borderRadius};padding:15px;position:relative;}.frame img,.frame video{width:100%;height:250px;object-fit:cover;border-radius:20px;cursor:pointer;}.download-btn{background:${themes[currentTheme].btnColor};color:white;border:none;padding:8px 20px;border-radius:30px;margin-top:10px;cursor:pointer;}</style></head><body><div class="royal-banner"><h1>👑 Welcome to Aru's Gallery World 👑</h1><p>👸 I am the Queen of this Gallery 👸</p><p>🎁 A small gift from Khushi Buaa 🎁</p></div><h2 style="text-align:center;color:white;">${themes[currentTheme].name} Gallery</h2><div class="gallery" id="gallery"></div><script>const mediaItems = ${JSON.stringify(mediaItems)};const gallery = document.getElementById('gallery');function download(src,name){const a=document.createElement('a');a.href=src;a.download=name;a.click();}mediaItems.forEach(item=>{const div=document.createElement('div');div.className='frame';if(item.type === 'video'){div.innerHTML=\`<video src="\${item.src}" controls></video><br><button class="download-btn" onclick="download('\${item.src}','\${item.name}')">⬇️ Download</button>\`;}else{div.innerHTML=\`<img src="\${item.src}" onclick="window.open(this.src)"><br><button class="download-btn" onclick="download('\${item.src}','\${item.name}')">⬇️ Download</button>\`;}gallery.appendChild(div);});<\/script></body></html>`;
+            
             const blob = new Blob([htmlContent], { type: 'text/html' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -712,14 +621,9 @@
             alert('👑 Royal Gallery Exported! 👑');
         };
 
-        // ========== UPLOAD PHOTOS ==========
+        // Upload Photos
         const photoInput = document.getElementById('photoInput');
         photoInput.addEventListener('change', function(e) {
-            if (isFinalized) { 
-                alert('👑 Gallery is locked! Cannot upload. 👑'); 
-                photoInput.value = ''; 
-                return; 
-            }
             const files = Array.from(e.target.files);
             files.forEach(file => {
                 const reader = new FileReader();
@@ -739,14 +643,9 @@
             photoInput.value = '';
         });
 
-        // ========== UPLOAD VIDEOS ==========
+        // Upload Videos
         const videoInput = document.getElementById('videoInput');
         videoInput.addEventListener('change', function(e) {
-            if (isFinalized) { 
-                alert('👑 Gallery is locked! Cannot upload. 👑'); 
-                videoInput.value = ''; 
-                return; 
-            }
             const files = Array.from(e.target.files);
             files.forEach(file => {
                 const reader = new FileReader();
@@ -766,18 +665,18 @@
             videoInput.value = '';
         });
 
-        // ========== THEME DROPDOWN ==========
+        // Theme dropdown
         document.getElementById('themeDropdown').addEventListener('change', function(e) { 
             applyTheme(e.target.value); 
         });
         
-        // ========== MODAL CLOSE ==========
+        // Modal close
         const modal = document.getElementById('modal');
         const closeModal = document.querySelector('.close');
         closeModal.onclick = () => modal.style.display = 'none';
         modal.onclick = () => modal.style.display = 'none';
 
-        // ========== INITIALIZE - LOAD SAVED DATA ==========
+        // Initialize
         loadSavedData();
     </script>
 </body>
