@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>✨ Aru's Royal Gallery | Queen's Palace ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            min-height: 100vh;
+            padding: 20px;
+            transition: all 0.5s ease;
+        }
+
+        /* Royal Welcome Banner */
+        .royal-welcome {
+            background: linear-gradient(135deg, rgba(255,215,0,0.95) 0%, rgba(255,105,180,0.95) 100%);
+            border-radius: 50px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border: 2px solid #ffd700;
+            animation: royalGlow 2s infinite;
+        }
+
+        @keyframes royalGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255,215,0,0.5); }
+            50% { box-shadow: 0 0 30px rgba(255,215,0,0.8); }
+        }
+
+        .royal-welcome h1 {
+            font-size: 2rem;
+            color: #4a1a2e;
+            margin-bottom: 10px;
+        }
+
+        .royal-welcome .queen-title {
+            font-size: 1.3rem;
+            color: #ffd700;
+            background: rgba(74,26,46,0.8);
+            display: inline-block;
+            padding: 8px 25px;
+            border-radius: 50px;
+            margin: 10px 0;
+        }
+
+        .royal-welcome .gift-message {
+            font-size: 1rem;
+            color: #fff;
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 50px;
+            margin-top: 10px;
+        }
+
+        .crown-icon {
+            font-size: 2.5rem;
+            display: inline-block;
+            animation: crownSpin 3s ease infinite;
+        }
+
+        @keyframes crownSpin {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(10deg); }
+            75% { transform: rotate(-10deg); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+        }
+
+        /* Theme Selector */
+        .theme-selector {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .theme-selector label {
+            color: white;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .theme-dropdown {
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 50px;
+            border: none;
+            background: white;
+            cursor: pointer;
+            font-weight: bold;
+            min-width: 200px;
+        }
+
+        /* Upload Area - VISIBLE BY DEFAULT */
+        .upload-area {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .upload-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .upload-btn {
+            padding: 14px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .upload-btn.photos {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .upload-btn.videos {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .upload-btn:hover {
+            transform: scale(1.05);
+        }
+
+        #photoInput, #videoInput {
+            display: none;
+        }
+
+        .count-badge {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            background: #667eea;
+            color: white;
+        }
+
+        /* Control Buttons */
+        .controls {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .control-btn {
+            padding: 10px 25px;
+            margin: 5px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            background: rgba(0,0,0,0.7);
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .finalize-btn {
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            color: #2d1b0e;
+            padding: 15px 40px;
+            font-size: 18px;
+        }
+
+        /* Gallery Grid */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .theme-frame {
+            transition: all 0.4s ease;
+            animation: fadeInUp 0.5s;
+            position: relative;
+            background: #fff5e6;
+            border: 3px solid #ff69b4;
+            border-radius: 50px;
+            padding: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .frame-corner {
+            position: absolute;
+            font-size: 28px;
+        }
+
+        .corner-tl { top: -8px; left: -5px; }
+        .corner-tr { top: -8px; right: -5px; }
+        .corner-bl { bottom: -8px; left: -5px; }
+        .corner-br { bottom: -8px; right: -5px; }
+
+        .media-container {
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 40px;
+            position: relative;
+        }
+
+        .media-container img,
+        .media-container video {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s;
+            border-radius: 35px;
+        }
+
+        .media-container:hover img,
+        .media-container:hover video {
+            transform: scale(1.05);
+        }
+
+        .video-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .media-info {
+            padding: 12px;
+            text-align: center;
+        }
+
+        .media-name {
+            font-size: 12px;
+            margin-bottom: 10px;
+            word-break: break-all;
+            color: #c2185b;
+        }
+
+        .download-btn {
+            background: #ff69b4;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .delete-btn {
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .delete-btn:hover {
+            background: #ff4757;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            cursor: pointer;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: #ffd700;
+            font-size: 50px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.15);
+            border-radius: 30px;
+            color: white;
+        }
+
+        /* Finalize Message - HIDDEN BY DEFAULT */
+        .finalize-message {
+            display: none;
+            text-align: center;
+            background: rgba(255,215,0,0.2);
+            padding: 12px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        /* LOCKED STATE - When finalized, hide these elements */
+        body.locked .upload-area {
+            display: none !important;
+        }
+
+        body.locked .finalize-btn {
+            display: none !important;
+        }
+
+        body.locked .delete-btn {
+            display: none !important;
+        }
+
+        body.locked .finalize-message {
+            display: block !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .gallery { grid-template-columns: 1fr; }
+            .media-container img, .media-container video { height: 220px; }
+            .royal-welcome h1 { font-size: 1.3rem; }
+            .upload-btn { padding: 10px 20px; font-size: 14px; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body id="appBody">
+    <!-- Royal Welcome Banner -->
+    <div class="royal-welcome">
+        <div class="crown-icon">👑</div>
+        <h1>✨ Welcome to Aru's Gallery World ✨</h1>
+        <div class="queen-title">👸 I am the Queen of this Gallery 👸</div>
+        <div class="gift-message">
+            🎁 💝 A small gift from Khushi Buaa 💝 🎁<br>
+            May your memories shine like stars forever! ✨🌙
+        </div>
+    </div>
+
+    <div class="header">
+        <h1 id="themeTitle">🌸 Royal Gallery 🌸</h1>
+        <p id="themeSubtitle">Select a theme - Your precious memories!</p>
+    </div>
+
+    <!-- Finalize Message - Shows only after locking -->
+    <div class="finalize-message" id="finalizeMessage">
+        👑 QUEEN'S ORDER: GALLERY IS LOCKED 👑<br>
+        Upload & Delete disabled. You can view, download & change themes.
+    </div>
+
+    <!-- Theme Selector -->
+    <div class="theme-selector">
+        <label>👑 CHOOSE THEME:</label>
+        <select id="themeDropdown" class="theme-dropdown">
+            <optgroup label="🌸 Flower Themes">
+                <option value="flower" selected>🌸 Flower Theme</option>
+                <option value="rose">🌹 Rose Theme</option>
+                <option value="lotus">🪷 Lotus Theme</option>
+                <option value="sunflower">🌻 Sunflower Theme</option>
+                <option value="tulip">🌷 Tulip Theme</option>
+                <option value="orchid">🌺 Orchid Theme</option>
+                <option value="daisy">🌼 Daisy Theme</option>
+                <option value="cherryblossom">🌸 Cherry Blossom</option>
+            </optgroup>
+            <optgroup label="🌙 Moon & Space Themes">
+                <option value="moon">🌙 Moon Theme</option>
+                <option value="fullmoon">🌕 Full Moon Theme</option>
+                <option value="crescent">🌙 Crescent Theme</option>
+                <option value="starry">⭐ Starry Night</option>
+            </optgroup>
+            <optgroup label="🎂 Birthday Themes">
+                <option value="birthday">🎂 Birthday Theme</option>
+                <option value="party">🎉 Party Theme</option>
+                <option value="celebration">🎈 Celebration Theme</option>
+                <option value="cake">🍰 Cake Theme</option>
+            </optgroup>
+            <optgroup label="🌿 Nature Themes">
+                <option value="nature">🌿 Nature Theme</option>
+                <option value="forest">🌲 Forest Theme</option>
+                <option value="beach">🏖️ Beach Theme</option>
+                <option value="sunset">🌅 Sunset Theme</option>
+            </optgroup>
+            <optgroup label="💖 Love Themes">
+                <option value="love">💖 Love Theme</option>
+                <option value="heart">❤️ Heart Theme</option>
+                <option value="romantic">💕 Romantic Theme</option>
+            </optgroup>
+            <optgroup label="🎪 Festival Themes">
+                <option value="diwali">🪔 Diwali Theme</option>
+                <option value="christmas">🎄 Christmas Theme</option>
+                <option value="halloween">🎃 Halloween Theme</option>
+                <option value="newyear">🎆 New Year Theme</option>
+            </optgroup>
+            <optgroup label="✨ Special Themes">
+                <option value="rainbow">🌈 Rainbow Theme</option>
+                <option value="vintage">📻 Vintage Theme</option>
+                <option value="mystical">🔮 Mystical Theme</option>
+                <option value="ocean">🌊 Ocean Theme</option>
+                <option value="galaxy">🌌 Galaxy Theme</option>
+                <option value="wedding">💍 Wedding Theme</option>
+                <option value="baby">👶 Baby Theme</option>
+            </optgroup>
+        </select>
+    </div>
+
+    <!-- UPLOAD AREA - Visible at start, hidden after finalize -->
+    <div class="upload-area" id="uploadArea">
+        <div class="upload-buttons">
+            <input type="file" id="photoInput" multiple accept="image/*">
+            <button class="upload-btn photos" onclick="document.getElementById('photoInput').click()">
+                📸 Upload Photos
+            </button>
+            <input type="file" id="videoInput" multiple accept="video/*">
+            <button class="upload-btn videos" onclick="document.getElementById('videoInput').click()">
+                🎥 Upload Videos
+            </button>
+        </div>
+        <div>
+            <span class="count-badge" id="mediaCount">👑 0 photos | 0 videos 👑</span>
+        </div>
+    </div>
+
+    <!-- Export Button -->
+    <div class="controls">
+        <button class="control-btn" onclick="exportHTML()">📄 Export Gallery</button>
+    </div>
+
+    <!-- Finalize Button -->
+    <div class="controls">
+        <button class="control-btn finalize-btn" id="finalizeBtn" onclick="finalizeGallery()">
+            👑 LOCK GALLERY (Disable Upload & Delete) 👑
+        </button>
+        <p style="color: white; font-size: 12px; margin-top: 10px;">
+            ⚠️ Once locked, Upload & Delete buttons will disappear permanently
+        </p>
+    </div>
+
+    <div class="gallery" id="gallery"></div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <span class="close">&times;</span>
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
+    <script>
+        let mediaItems = [];
+        let currentTheme = 'flower';
+        let isFinalized = false;
+
+        // ========== LOAD SAVED DATA ON PAGE LOAD ==========
+        function loadSavedData() {
+            // Load saved media items (photos & videos)
+            const savedMedia = localStorage.getItem('aruGalleryMedia');
+            if (savedMedia && savedMedia !== '[]') {
+                mediaItems = JSON.parse(savedMedia);
+                console.log('Loaded ' + mediaItems.length + ' items from storage');
+            }
+            
+            // Load saved theme
+            const savedTheme = localStorage.getItem('aruGalleryTheme');
+            if (savedTheme) {
+                currentTheme = savedTheme;
+            }
+            
+            // Load finalized state - THIS IS KEY FOR PERSISTENCE
+            const savedFinalized = localStorage.getItem('aruGalleryFinalized');
+            if (savedFinalized === 'true') {
+                isFinalized = true;
+                document.getElementById('appBody').classList.add('locked');
+                console.log('Gallery is in LOCKED state from previous session');
+            } else {
+                console.log('Gallery is in UNLOCKED state');
+            }
+            
+            // Apply theme and render
+            applyTheme(currentTheme);
+            updateCount();
+        }
+
+        // ========== SAVE ALL DATA ==========
+        function saveAllData() {
+            localStorage.setItem('aruGalleryMedia', JSON.stringify(mediaItems));
+            localStorage.setItem('aruGalleryTheme', currentTheme);
+            if (isFinalized) {
+                localStorage.setItem('aruGalleryFinalized', 'true');
+            } else {
+                localStorage.setItem('aruGalleryFinalized', 'false');
+            }
+            console.log('Data saved - Items: ' + mediaItems.length + ', Finalized: ' + isFinalized);
+        }
+
+        // ========== APPLY FINALIZED STATE (Hides upload & delete) ==========
+        function applyFinalizedState() {
+            document.getElementById('appBody').classList.add('locked');
+            renderGallery(); // Re-render to remove delete buttons
+            saveAllData();
+        }
+
+        // ========== FINALIZE GALLERY ==========
+        window.finalizeGallery = function() {
+            if (mediaItems.length === 0) {
+                alert('👑 Queen says: Please upload photos/videos before locking! 👑');
+                return;
+            }
+            if (confirm('👑 QUEEN\'S COMMAND - LOCK GALLERY? 👑\n\nOnce locked:\n✓ Upload button will disappear FOREVER\n✓ Delete buttons will disappear FOREVER\n✓ Theme selection still works\n✓ Download & Export still work\n✓ Images will remain even after refresh\n\nThis action CANNOT be undone!\n\nAre you sure?')) {
+                isFinalized = true;
+                applyFinalizedState();
+                alert('👑 Gallery Locked Permanently! Upload & Delete buttons are now hidden.\n\nRefresh the page - they will stay hidden! 👑');
+            }
+        };
+
+        // ========== 30+ THEMES ==========
+        const themes = {
+            flower: { name: "🌸 Flower", bg: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)", frameBg: "#fff5e6", border: "3px solid #ff69b4", corner1: "🌸", corner2: "🌺", corner3: "🌼", corner4: "🌻", textColor: "#c2185b", btnColor: "#ff69b4", borderRadius: "50px" },
+            rose: { name: "🌹 Rose", bg: "linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%)", frameBg: "#fff0f0", border: "3px solid #dc143c", corner1: "🌹", corner2: "🥀", corner3: "🌹", corner4: "🥀", textColor: "#8b0000", btnColor: "#dc143c", borderRadius: "30px" },
+            lotus: { name: "🪷 Lotus", bg: "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)", frameBg: "#f0f9ff", border: "3px solid #06b6d4", corner1: "🪷", corner2: "🌸", corner3: "🪷", corner4: "🌸", textColor: "#0891b2", btnColor: "#06b6d4", borderRadius: "40px" },
+            sunflower: { name: "🌻 Sunflower", bg: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)", frameBg: "#fffbeb", border: "3px solid #f59e0b", corner1: "🌻", corner2: "🌻", corner3: "🌻", corner4: "🌻", textColor: "#b45309", btnColor: "#f59e0b", borderRadius: "60px" },
+            tulip: { name: "🌷 Tulip", bg: "linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)", frameBg: "#fdf2f8", border: "3px solid #ec4899", corner1: "🌷", corner2: "🌷", corner3: "🌷", corner4: "🌷", textColor: "#be185d", btnColor: "#ec4899", borderRadius: "45px" },
+            orchid: { name: "🌺 Orchid", bg: "linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%)", frameBg: "#faf5ff", border: "3px solid #a855f7", corner1: "🌺", corner2: "🌸", corner3: "🌺", corner4: "🌸", textColor: "#6b21a8", btnColor: "#a855f7", borderRadius: "35px" },
+            daisy: { name: "🌼 Daisy", bg: "linear-gradient(135deg, #ecfccb 0%, #d9f99d 100%)", frameBg: "#f7fee7", border: "3px solid #84cc16", corner1: "🌼", corner2: "🌼", corner3: "🌼", corner4: "🌼", textColor: "#4d7c0f", btnColor: "#84cc16", borderRadius: "55px" },
+            cherryblossom: { name: "🌸 Cherry", bg: "linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%)", frameBg: "#fdf2f8", border: "3px solid #f472b6", corner1: "🌸", corner2: "🌸", corner3: "🌸", corner4: "🌸", textColor: "#be185d", btnColor: "#ec4899", borderRadius: "50px" },
+            moon: { name: "🌙 Moon", bg: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)", frameBg: "#1e293b", border: "3px solid #fbbf24", corner1: "🌙", corner2: "⭐", corner3: "🌙", corner4: "⭐", textColor: "#fde68a", btnColor: "#f59e0b", borderRadius: "30px" },
+            fullmoon: { name: "🌕 Full Moon", bg: "linear-gradient(135deg, #0a0a2a 0%, #1a1a4a 100%)", frameBg: "#16213e", border: "3px solid #ffd700", corner1: "🌕", corner2: "🌖", corner3: "🌗", corner4: "🌘", textColor: "#ffd700", btnColor: "#ffd700", borderRadius: "60px" },
+            crescent: { name: "🌙 Crescent", bg: "linear-gradient(135deg, #1e1b4b 0%, #2e1a47 100%)", frameBg: "#2d1b69", border: "3px solid #c084fc", corner1: "🌙", corner2: "✨", corner3: "🌙", corner4: "✨", textColor: "#c084fc", btnColor: "#a855f7", borderRadius: "50px" },
+            starry: { name: "⭐ Starry", bg: "linear-gradient(135deg, #0f172a 0%, #020617 100%)", frameBg: "#0f172a", border: "3px solid #fef08a", corner1: "⭐", corner2: "🌟", corner3: "⭐", corner4: "🌟", textColor: "#fef08a", btnColor: "#eab308", borderRadius: "35px" },
+            birthday: { name: "🎂 Birthday", bg: "linear-gradient(135deg, #fbcfe8 0%, #fda4af 100%)", frameBg: "#fff0f5", border: "3px solid #f43f5e", corner1: "🎂", corner2: "🎈", corner3: "🎁", corner4: "🎉", textColor: "#e11d48", btnColor: "#f43f5e", borderRadius: "40px" },
+            party: { name: "🎉 Party", bg: "linear-gradient(135deg, #fef08a 0%, #fde047 100%)", frameBg: "#fefce8", border: "3px solid #eab308", corner1: "🎉", corner2: "🎊", corner3: "🎉", corner4: "🎊", textColor: "#854d0e", btnColor: "#eab308", borderRadius: "45px" },
+            celebration: { name: "🎈 Celebration", bg: "linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)", frameBg: "#eff6ff", border: "3px solid #3b82f6", corner1: "🎈", corner2: "🎈", corner3: "🎈", corner4: "🎈", textColor: "#1e40af", btnColor: "#3b82f6", borderRadius: "50px" },
+            cake: { name: "🍰 Cake", bg: "linear-gradient(135deg, #fed7aa 0%, #fdba74 100%)", frameBg: "#fff7ed", border: "3px solid #ea580c", corner1: "🍰", corner2: "🧁", corner3: "🍰", corner4: "🧁", textColor: "#9a3412", btnColor: "#ea580c", borderRadius: "60px" },
+            nature: { name: "🌿 Nature", bg: "linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)", frameBg: "#f0fdf4", border: "3px solid #22c55e", corner1: "🌿", corner2: "🍃", corner3: "🌱", corner4: "🍂", textColor: "#166534", btnColor: "#22c55e", borderRadius: "30px" },
+            forest: { name: "🌲 Forest", bg: "linear-gradient(135deg, #14532d 0%, #166534 100%)", frameBg: "#052e16", border: "3px solid #4ade80", corner1: "🌲", corner2: "🌳", corner3: "🌲", corner4: "🌳", textColor: "#bbf7d0", btnColor: "#4ade80", borderRadius: "35px" },
+            beach: { name: "🏖️ Beach", bg: "linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%)", frameBg: "#e0f2fe", border: "3px solid #0284c7", corner1: "🏖️", corner2: "🌊", corner3: "🐚", corner4: "☀️", textColor: "#075985", btnColor: "#0284c7", borderRadius: "40px" },
+            sunset: { name: "🌅 Sunset", bg: "linear-gradient(135deg, #f97316 0%, #ef4444 100%)", frameBg: "#fff7ed", border: "3px solid #ea580c", corner1: "🌅", corner2: "🌇", corner3: "🌄", corner4: "🌆", textColor: "#9a3412", btnColor: "#f97316", borderRadius: "50px" },
+            love: { name: "💖 Love", bg: "linear-gradient(135deg, #fecdd3 0%, #fda4af 100%)", frameBg: "#fff5f6", border: "3px solid #e11d48", corner1: "💖", corner2: "💕", corner3: "💗", corner4: "💓", textColor: "#be123c", btnColor: "#e11d48", borderRadius: "45px" },
+            heart: { name: "❤️ Heart", bg: "linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)", frameBg: "#fef2f2", border: "3px solid #dc2626", corner1: "❤️", corner2: "🧡", corner3: "💛", corner4: "💚", textColor: "#991b1b", btnColor: "#dc2626", borderRadius: "60px" },
+            romantic: { name: "💕 Romantic", bg: "linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%)", frameBg: "#fdf2f8", border: "3px solid #ec4899", corner1: "💕", corner2: "💘", corner3: "💝", corner4: "💞", textColor: "#be185d", btnColor: "#ec4899", borderRadius: "55px" },
+            diwali: { name: "🪔 Diwali", bg: "linear-gradient(135deg, #fef08a 0%, #f59e0b 100%)", frameBg: "#fffbeb", border: "3px solid #d97706", corner1: "🪔", corner2: "🎆", corner3: "✨", corner4: "🪔", textColor: "#78350f", btnColor: "#d97706", borderRadius: "40px" },
+            christmas: { name: "🎄 Christmas", bg: "linear-gradient(135deg, #14532d 0%, #991b1b 100%)", frameBg: "#fef2f2", border: "3px solid #ef4444", corner1: "🎄", corner2: "🎅", corner3: "🤶", corner4: "🎁", textColor: "#ffffff", btnColor: "#ef4444", borderRadius: "50px" },
+            halloween: { name: "🎃 Halloween", bg: "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)", frameBg: "#0f0f23", border: "3px solid #f97316", corner1: "🎃", corner2: "👻", corner3: "🦇", corner4: "🎃", textColor: "#f97316", btnColor: "#ea580c", borderRadius: "35px" },
+            newyear: { name: "🎆 New Year", bg: "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)", frameBg: "#1e1b4b", border: "3px solid #fbbf24", corner1: "🎆", corner2: "🎇", corner3: "✨", corner4: "🎉", textColor: "#fde68a", btnColor: "#f59e0b", borderRadius: "45px" },
+            rainbow: { name: "🌈 Rainbow", bg: "linear-gradient(135deg, #ff0000 0%, #ff7f00 20%, #ffff00 40%, #00ff00 60%, #0000ff 80%, #4b0082 100%)", frameBg: "#ffffff", border: "3px solid #ff00ff", corner1: "🌈", corner2: "☁️", corner3: "🌈", corner4: "☁️", textColor: "#ff00ff", btnColor: "#ff00ff", borderRadius: "30px" },
+            vintage: { name: "📻 Vintage", bg: "linear-gradient(135deg, #d4a373 0%, #faedcd 100%)", frameBg: "#fefae0", border: "3px solid #8b5a2b", corner1: "📻", corner2: "🎞️", corner3: "📷", corner4: "🎬", textColor: "#5c3a1e", btnColor: "#8b5a2b", borderRadius: "15px" },
+            mystical: { name: "🔮 Mystical", bg: "linear-gradient(135deg, #2e1065 0%, #4c1d95 100%)", frameBg: "#3b0764", border: "3px solid #c084fc", corner1: "🔮", corner2: "✨", corner3: "🪄", corner4: "⭐", textColor: "#e9d5ff", btnColor: "#a855f7", borderRadius: "50px" },
+            ocean: { name: "🌊 Ocean", bg: "linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%)", frameBg: "#e0f2fe", border: "3px solid #0369a1", corner1: "🌊", corner2: "🐟", corner3: "🐠", corner4: "🐡", textColor: "#082f49", btnColor: "#0284c7", borderRadius: "40px" },
+            galaxy: { name: "🌌 Galaxy", bg: "linear-gradient(135deg, #020617 0%, #1e1b4b 100%)", frameBg: "#0f172a", border: "3px solid #8b5cf6", corner1: "🌌", corner2: "🚀", corner3: "🛸", corner4: "⭐", textColor: "#c4b5fd", btnColor: "#8b5cf6", borderRadius: "60px" },
+            wedding: { name: "💍 Wedding", bg: "linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)", frameBg: "#fff5f6", border: "3px solid #f472b6", corner1: "💍", corner2: "💒", corner3: "🤵", corner4: "👰", textColor: "#be185d", btnColor: "#ec4899", borderRadius: "50px" },
+            baby: { name: "👶 Baby", bg: "linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%)", frameBg: "#eff6ff", border: "3px solid #60a5fa", corner1: "👶", corner2: "🍼", corner3: "🧸", corner4: "🎀", textColor: "#1e3a8a", btnColor: "#3b82f6", borderRadius: "45px" }
+        };
+
+        function applyTheme(themeKey) {
+            currentTheme = themeKey;
+            const theme = themes[themeKey];
+            document.body.style.background = theme.bg;
+            document.getElementById('themeTitle').innerHTML = theme.name + " 👑";
+            const photoCount = mediaItems.filter(m => m.type === 'photo').length;
+            const videoCount = mediaItems.filter(m => m.type === 'video').length;
+            document.getElementById('themeSubtitle').innerHTML = `✨ ${theme.name} Theme - ${photoCount} photos | ${videoCount} videos ✨`;
+            document.getElementById('themeDropdown').value = themeKey;
+            renderGallery();
+            saveAllData();
+        }
+
+        window.downloadMedia = function(src, name, type) {
+            const link = document.createElement('a');
+            link.href = src;
+            link.download = name || (type === 'video' ? 'video.mp4' : 'image.jpg');
+            link.click();
+        };
+
+        window.openModal = function(src, type) {
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modalContent');
+            if (type === 'video') {
+                modalContent.innerHTML = `<video controls autoplay style="max-width: 90vw; max-height: 90vh;"><source src="${src}" type="video/mp4"></video>`;
+            } else {
+                modalContent.innerHTML = `<img src="${src}" style="max-width: 90vw; max-height: 90vh; border-radius: 10px;">`;
+            }
+            modal.style.display = 'block';
+        };
+
+        function renderGallery() {
+            const theme = themes[currentTheme];
+            const gallery = document.getElementById('gallery');
+            if (mediaItems.length === 0) {
+                gallery.innerHTML = `<div class="empty-state">👑 Welcome Queen Aru! Upload your precious memories to begin the royal gallery! 👑</div>`;
+                return;
+            }
+            const showDeleteBtn = !isFinalized;
+            gallery.innerHTML = mediaItems.map(item => `
+                <div class="theme-frame" style="background: ${theme.frameBg}; border: ${theme.border}; border-radius: ${theme.borderRadius};">
+                    <div class="frame-corner corner-tl">${theme.corner1}</div>
+                    <div class="frame-corner corner-tr">${theme.corner2}</div>
+                    <div class="frame-corner corner-bl">${theme.corner3}</div>
+                    <div class="frame-corner corner-br">${theme.corner4}</div>
+                    <div class="media-container" style="border-radius: ${parseInt(theme.borderRadius) - 10}px;">
+                        ${item.type === 'video' ? 
+                            `<video src="${item.src}" onclick="openModal('${item.src}', 'video')"></video>
+                             <div class="video-badge">🎥 VIDEO</div>` : 
+                            `<img src="${item.src}" alt="${item.name}" onclick="openModal('${item.src}', 'image')">`
+                        }
+                    </div>
+                    <div class="media-info">
+                        <div class="media-name" style="color: ${theme.textColor};">${item.type === 'video' ? '🎥' : '📷'} ${item.name.substring(0, 35)}</div>
+                        <div>
+                            <button class="download-btn" style="background: ${theme.btnColor};" onclick="downloadMedia('${item.src}', '${item.name}', '${item.type}')">
+                                ⬇️ Download
+                            </button>
+                            ${showDeleteBtn ? `<button class="delete-btn" onclick="deleteMedia('${item.id}')">🗑️ Delete</button>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.deleteMedia = function(id) {
+            if (isFinalized) {
+                alert('👑 Gallery is locked! Cannot delete. 👑');
+                return;
+            }
+            if (confirm('Remove this item?')) {
+                mediaItems = mediaItems.filter(item => item.id != id);
+                renderGallery();
+                updateCount();
+                saveAllData();
+            }
+        };
+
+        function updateCount() {
+            const photoCount = mediaItems.filter(m => m.type === 'photo').length;
+            const videoCount = mediaItems.filter(m => m.type === 'video').length;
+            document.getElementById('mediaCount').innerHTML = `👑 📸 ${photoCount} photos | 🎥 ${videoCount} videos 👑`;
+        }
+
+        window.exportHTML = function() {
+            if (mediaItems.length === 0) {
+                alert('No media to export!');
+                return;
+            }
+            const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Aru's Royal Gallery</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial;background:${themes[currentTheme].bg};padding:20px;}.royal-banner{text-align:center;background:linear-gradient(135deg,gold,pink);padding:20px;border-radius:50px;margin-bottom:20px;}.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:25px;}.frame{background:${themes[currentTheme].frameBg};border:${themes[currentTheme].border};border-radius:${themes[currentTheme].borderRadius};padding:15px;}.frame img,.frame video{width:100%;height:250px;object-fit:cover;border-radius:20px;}.download-btn{background:${themes[currentTheme].btnColor};color:white;border:none;padding:8px 20px;border-radius:30px;margin-top:10px;cursor:pointer;}</style></head><body><div class="royal-banner"><h1>👑 Welcome to Aru's Gallery World 👑</h1><p>👸 I am the Queen of this Gallery 👸</p><p>🎁 A small gift from Khushi Buaa 🎁</p></div><h2 style="text-align:center;color:white;">${themes[currentTheme].name} Gallery</h2><div class="gallery" id="gallery"></div><script>const mediaItems = ${JSON.stringify(mediaItems)};const gallery = document.getElementById('gallery');function download(src,name){const a=document.createElement('a');a.href=src;a.download=name;a.click();}mediaItems.forEach(item=>{const div=document.createElement('div');div.className='frame';if(item.type === 'video'){div.innerHTML=\`<video src="\${item.src}" controls></video><br><button class="download-btn" onclick="download('\${item.src}','\${item.name}')">⬇️ Download</button>\`;}else{div.innerHTML=\`<img src="\${item.src}" onclick="window.open(this.src)"><br><button class="download-btn" onclick="download('\${item.src}','\${item.name}')">⬇️ Download</button>\`;}gallery.appendChild(div);});<\/script></body></html>`;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'aru-royal-gallery.html';
+            link.click();
+            alert('👑 Royal Gallery Exported! 👑');
+        };
+
+        // ========== UPLOAD PHOTOS ==========
+        const photoInput = document.getElementById('photoInput');
+        photoInput.addEventListener('change', function(e) {
+            if (isFinalized) { 
+                alert('👑 Gallery is locked! Cannot upload. 👑'); 
+                photoInput.value = ''; 
+                return; 
+            }
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    mediaItems.push({ 
+                        id: Date.now() + Math.random(), 
+                        src: event.target.result, 
+                        name: file.name, 
+                        type: 'photo' 
+                    });
+                    renderGallery(); 
+                    updateCount(); 
+                    saveAllData();
+                };
+                reader.readAsDataURL(file);
+            });
+            photoInput.value = '';
+        });
+
+        // ========== UPLOAD VIDEOS ==========
+        const videoInput = document.getElementById('videoInput');
+        videoInput.addEventListener('change', function(e) {
+            if (isFinalized) { 
+                alert('👑 Gallery is locked! Cannot upload. 👑'); 
+                videoInput.value = ''; 
+                return; 
+            }
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    mediaItems.push({ 
+                        id: Date.now() + Math.random(), 
+                        src: event.target.result, 
+                        name: file.name, 
+                        type: 'video' 
+                    });
+                    renderGallery(); 
+                    updateCount(); 
+                    saveAllData();
+                };
+                reader.readAsDataURL(file);
+            });
+            videoInput.value = '';
+        });
+
+        // ========== THEME DROPDOWN ==========
+        document.getElementById('themeDropdown').addEventListener('change', function(e) { 
+            applyTheme(e.target.value); 
+        });
+        
+        // ========== MODAL CLOSE ==========
+        const modal = document.getElementById('modal');
+        const closeModal = document.querySelector('.close');
+        closeModal.onclick = () => modal.style.display = 'none';
+        modal.onclick = () => modal.style.display = 'none';
+
+        // ========== INITIALIZE - LOAD SAVED DATA ==========
+        loadSavedData();
+    </script>
+</body>
+</html>
